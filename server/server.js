@@ -1,23 +1,17 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const mysql = require("mysql");
+const db = require("./models");
 const upload = require("./routes/upload");
 const PORT = process.env.PORT || 8080;
 const app = express();
+global.__basedir = __dirname;
 app.listen(PORT, () => {
   console.log(`Server running on ${PORT}`);
 });
-
-const con = mysql.createConnection({
-  host: "localhost",
-  user: "root",
-  password: "123456",
-});
-
-con.connect((err) => {
-  if (err) throw err;
-  console.log("Connected!");
+// db.sequelize.sync();
+db.sequelize.sync({ force: true }).then(() => {
+  console.log("Drop and re-sync db.");
 });
 
 app.use(cors());
@@ -36,7 +30,7 @@ app.use((err, req, res, next) => {
   res.send({
     error: {
       status: err.status || 500,
-      message: err.message || "Internal Server Error",
-    },
+      message: err.message || "Internal Server Error"
+    }
   });
 });
