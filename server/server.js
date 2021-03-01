@@ -1,7 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const mongoose = require("mongoose");
+const mysql = require("mysql");
 const upload = require("./routes/upload");
 const PORT = process.env.PORT || 8080;
 const app = express();
@@ -9,12 +9,15 @@ app.listen(PORT, () => {
   console.log(`Server running on ${PORT}`);
 });
 
-mongoose.connect(process.env.MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true });
-mongoose.connection.on("connected", () => {
-  console.log("Mongodb connected");
+const con = mysql.createConnection({
+  host: "localhost",
+  user: "root",
+  password: "123456",
 });
-mongoose.connection.on("error", (err) => {
-  console.log("Mongodb error", err);
+
+con.connect((err) => {
+  if (err) throw err;
+  console.log("Connected!");
 });
 
 app.use(cors());
