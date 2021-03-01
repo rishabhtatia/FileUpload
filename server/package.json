@@ -1,0 +1,21 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "File Upload App",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodemon server.js",
+    "dev": "env-cmd -f ./config/dev.env nodemon server.js"
+  },
+  "author": "Rishabh Tatia",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "mongoose": "^5.11.18"
+  },
+  "devDependencies": {
+    "env-cmd": "^10.1.0"
+  }
+}
