@@ -1,9 +1,23 @@
-const db = require("../config/database");
 const Employee = require("../models/Employee");
-
+const Image = require("../models/Image");
 const fs = require("fs");
 const csv = require("fast-csv");
 const readXlsxFile = require("read-excel-file/node");
+
+const addEmployee = (employees, req, res) => {
+  Employee.bulkCreate(employees)
+    .then(() => {
+      res.status(200).send({
+        message: "Uploaded the file successfully: " + req.file.originalname
+      });
+    })
+    .catch(error => {
+      res.status(500).send({
+        message: "Fail to import data into database!",
+        error: error.message
+      });
+    });
+};
 
 const upload = async (req, res) => {
   try {
@@ -30,19 +44,7 @@ const upload = async (req, res) => {
           };
           employees.push(employee);
         });
-        Employee.bulkCreate(employees)
-          .then(() => {
-            res.status(200).send({
-              message:
-                "Uploaded the file successfully: " + req.file.originalname
-            });
-          })
-          .catch(error => {
-            res.status(500).send({
-              message: "Fail to import data into database!",
-              error: error.message
-            });
-          });
+        addEmployee(employees, req, res);
       });
     }
     if (req.file.mimetype.includes("csv")) {
@@ -55,41 +57,42 @@ const upload = async (req, res) => {
           employees.push(row);
         })
         .on("end", () => {
-          Employee.bulkCreate(employees)
-            .then(() => {
-              res.status(200).send({
-                message:
-                  "Uploaded the file successfully: " + req.file.originalname
-              });
-            })
-            .catch(error => {
-              res.status(500).send({
-                message: "Fail to import data into database!",
-                error: error.message
-              });
-            });
+          addEmployee(employees, req, res);
         });
     }
   } catch (error) {
-    console.log(error);
-    console.log("ERROR");
     res.status(500).send({
       message: "Could not upload the file: " + req.file.originalname
     });
   }
 };
 
-const imageUpload = (req, res) => {
+const imageUpload = async (req, res) => {
   try {
     if (req.file == undefined) {
       return res.status(400).send("Please upload a file!");
     }
-    res.status(200).send({
+    const image = await Image.create({
+      type: req.file.mimetype,
+      name: req.file.originalname,
+      data: fs.readFileSync(
+        __basedir + "/resources/static/images/" + req.file.filename
+      )
+    });
+    fs.writeFileSync(
+      __basedir + "/resources/static/tmp/" + image.name,
+      image.data
+    );
+    return res.status(200).send({
       message: "Uploaded the file successfully: " + req.file.originalname
     });
   } catch (error) {
-    console.log(error);
-    console.log("ERROR");
+    console.log(error?.original?.code);
+    if (error?.original?.code === "ER_DUP_ENTRY") {
+      return res.status(500).send({
+        message: "Duplicate File: " + req.file.originalname
+      });
+    }
     res.status(500).send({
       message: "Could not upload the file: " + req.file.originalname
     });

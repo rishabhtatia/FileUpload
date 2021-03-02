@@ -21,5 +21,9 @@ const storage = multer.diskStorage({
   }
 });
 
-const uploadFile = multer({ storage: storage, fileFilter: typeOfFileFilter });
+const uploadFile = multer({
+  storage: storage,
+  fileFilter: typeOfFileFilter,
+  limits: { fileSize: 2000000 } //fileSize in bytes
+});
 module.exports = uploadFile;

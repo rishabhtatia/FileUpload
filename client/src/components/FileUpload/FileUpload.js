@@ -15,7 +15,6 @@ const FileUpload = () => {
         setError("");
         const formData = new FormData();
         formData.append("file", selectedFile);
-        console.log(selectedFile);
         if (selectedFile.name.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF)$/)) {
           url = "api/imageupload";
         }

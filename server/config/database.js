@@ -1,7 +1,7 @@
 const Sequelize = require("sequelize");
 const mysql = require("mysql2/promise");
-initialize();
 
+initialize();
 async function initialize() {
   // create db if it doesn't exist
   try {
@@ -12,7 +12,6 @@ async function initialize() {
     });
     await connection.query(`CREATE DATABASE IF NOT EXISTS \`test\`;`);
   } catch (err) {
-    console.log(err);
     console.log("Error occured while creating Database");
   }
 }

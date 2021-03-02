@@ -2,13 +2,14 @@ const Sequelize = require("sequelize");
 const db = require("../config/database");
 const Image = db.define("image", {
   type: {
-    type: DataTypes.STRING
+    type: Sequelize.STRING
   },
   name: {
-    type: DataTypes.STRING
+    type: Sequelize.STRING,
+    unique: "name"
   },
   data: {
-    type: DataTypes.BLOB("long")
+    type: Sequelize.BLOB("long")
   }
 });
 
