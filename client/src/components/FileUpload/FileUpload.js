@@ -4,17 +4,32 @@ import axios from "axios";
 const FileUpload = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [error, setError] = useState("");
+  const [message, setMessage] = useState("");
   const onFileChange = event => {
     setSelectedFile(event.target.files[0]);
   };
   const onFileUpload = async () => {
-    if (selectedFile) {
-      const formData = new FormData();
-      formData.append("upload-file", selectedFile);
-      const resp = await axios.get("http://localhost:8080/api/upload");
-      console.log(resp);
-    } else {
-      setError("No file chosen");
+    try {
+      let url = "api/upload";
+      if (selectedFile) {
+        setError("");
+        const formData = new FormData();
+        formData.append("file", selectedFile);
+        console.log(selectedFile);
+        if (selectedFile.name.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF)$/)) {
+          url = "api/imageupload";
+        }
+        const resp = await axios.post(`http://localhost:8080/${url}`, formData);
+        setMessage(resp?.data?.message);
+        setTimeout(() => {
+          setMessage("");
+        }, 4000);
+        setSelectedFile(null);
+      } else {
+        throw new Error("No file chosen");
+      }
+    } catch (error) {
+      setError(error?.message);
     }
   };
   return (
@@ -35,6 +50,7 @@ const FileUpload = () => {
         )}
       </div>
       <h2 style={{ color: "red" }}>{error}</h2>
+      <h2 style={{ color: "green" }}>{message}</h2>
     </div>
   );
 };

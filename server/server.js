@@ -1,18 +1,22 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const db = require("./models");
+const db = require("./config/database");
 const upload = require("./routes/upload");
 const PORT = process.env.PORT || 8080;
 const app = express();
 global.__basedir = __dirname;
+
 app.listen(PORT, () => {
   console.log(`Server running on ${PORT}`);
 });
-// db.sequelize.sync();
-db.sequelize.sync({ force: true }).then(() => {
+// db.sync();
+db.sync({ force: true }).then(() => {
   console.log("Drop and re-sync db.");
 });
+db.authenticate()
+  .then(() => console.log("Database Connected..."))
+  .catch(err => console.log("Error: " + err));
 
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: true }));

@@ -1,10 +1,14 @@
 const multer = require("multer");
 
-const csvFilter = (req, file, cb) => {
-  if (file.mimetype.includes("csv")) {
+const typeOfFileFilter = (req, file, cb) => {
+  if (
+    file.mimetype.includes("csv") ||
+    file.mimetype.includes("excel") ||
+    file.mimetype.includes("spreadsheetml")
+  ) {
     cb(null, true);
   } else {
-    cb("Please upload only csv file.", false);
+    cb("Please upload only csv or excel file.", false);
   }
 };
 
@@ -17,5 +21,5 @@ const storage = multer.diskStorage({
   }
 });
 
-const uploadFile = multer({ storage: storage, fileFilter: csvFilter });
+const uploadFile = multer({ storage: storage, fileFilter: typeOfFileFilter });
 module.exports = uploadFile;

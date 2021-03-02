@@ -1,12 +1,18 @@
 const express = require("express");
 const router = express.Router();
-const tutorialServices = require("../services/tutorialService");
+const employeeService = require("../services/employeeService");
 const upload = require("../middleware/upload");
+const imageUpload = require("../middleware/image");
 
 router.get("/uploadtest", (req, res, next) => {
   res.send("Hello World");
 });
-router.post("/upload", upload.single("file"), tutorialServices.upload);
-router.get("/tutorials", tutorialServices.getTutorials);
+router.post("/upload", upload.single("file"), employeeService.upload);
+router.post(
+  "/imageupload",
+  imageUpload.single("file"),
+  employeeService.imageUpload
+);
+router.get("/employees", employeeService.getEmployees);
 
 module.exports = router;
