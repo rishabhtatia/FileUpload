@@ -1,14 +1,11 @@
 const multer = require("multer");
+const { FILE_LIMIT_SIZE } = require("../constants");
 
 const typeOfFileFilter = (req, file, cb) => {
-  if (
-    file.mimetype.includes("csv") ||
-    file.mimetype.includes("excel") ||
-    file.mimetype.includes("spreadsheetml")
-  ) {
+  if (file.mimetype.match(/(?:^|\W)(csv|excel|spreadsheetml)(?:$|\W)/)) {
     cb(null, true);
   } else {
-    cb("Please upload only csv or excel file.", false);
+    cb("Please upload only csv,excel or image file.", false);
   }
 };
 
@@ -22,8 +19,8 @@ const storage = multer.diskStorage({
 });
 
 const uploadFile = multer({
-  storage: storage,
+  storage,
   fileFilter: typeOfFileFilter,
-  limits: { fileSize: 2000000 } //fileSize in bytes
+  limits: { fileSize: FILE_LIMIT_SIZE } //fileSize in bytes
 });
 module.exports = uploadFile;

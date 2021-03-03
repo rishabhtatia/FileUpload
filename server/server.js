@@ -10,10 +10,10 @@ global.__basedir = __dirname;
 app.listen(PORT, () => {
   console.log(`Server running on ${PORT}`);
 });
-// db.sync();
-db.sync({ force: true }).then(() => {
-  console.log("Drop and re-sync db.");
-});
+db.sync(); //For not dropping database
+// db.sync({ force: true }).then(() => {
+//   console.log("Drop and re-sync db.");
+// });
 db.authenticate()
   .then(() => console.log("Database Connected..."))
   .catch(err => console.log("Error: " + err));

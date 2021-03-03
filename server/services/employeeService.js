@@ -8,7 +8,7 @@ const addEmployee = (employees, req, res) => {
   Employee.bulkCreate(employees)
     .then(() => {
       res.status(200).send({
-        message: "Uploaded the file successfully: " + req.file.originalname
+        message: `Uploaded the file successfully: ${req.file.originalname}`
       });
     })
     .catch(error => {
@@ -26,12 +26,8 @@ const upload = async (req, res) => {
     }
 
     let employees = [];
-    let path =
-      __basedir + "/resources/static/assets/uploads/" + req.file.filename;
-    if (
-      req.file.mimetype.includes("excel") ||
-      req.file.mimetype.includes("spreadsheetml")
-    ) {
+    let path = `${__basedir}/resources/static/assets/uploads/${req.file.filename}`;
+    if (req.file.mimetype.match(/(?:^|\W)(excel|spreadsheetml)(?:$|\W)/)) {
       readXlsxFile(path).then(rows => {
         // skip header
         rows.shift();
@@ -47,7 +43,7 @@ const upload = async (req, res) => {
         addEmployee(employees, req, res);
       });
     }
-    if (req.file.mimetype.includes("csv")) {
+    if (req.file.mimetype.match(/(?:^|\W)(csv)(?:$|\W)/)) {
       fs.createReadStream(path)
         .pipe(csv.parse({ headers: true }))
         .on("error", error => {
@@ -62,7 +58,7 @@ const upload = async (req, res) => {
     }
   } catch (error) {
     res.status(500).send({
-      message: "Could not upload the file: " + req.file.originalname
+      message: `Could not upload the file: ${req.file.originalname}`
     });
   }
 };
@@ -76,25 +72,25 @@ const imageUpload = async (req, res) => {
       type: req.file.mimetype,
       name: req.file.originalname,
       data: fs.readFileSync(
-        __basedir + "/resources/static/images/" + req.file.filename
+        `${__basedir}/resources/static/images/${req.file.filename}`
       )
     });
     fs.writeFileSync(
-      __basedir + "/resources/static/tmp/" + image.name,
+      `${__basedir}/resources/static/tmp/${image.name}`,
       image.data
     );
     return res.status(200).send({
-      message: "Uploaded the file successfully: " + req.file.originalname
+      message: `Uploaded the file successfully: ${req.file.originalname}`
     });
   } catch (error) {
     console.log(error?.original?.code);
     if (error?.original?.code === "ER_DUP_ENTRY") {
       return res.status(500).send({
-        message: "Duplicate File: " + req.file.originalname
+        message: `Duplicate File: ${req.file.originalname}`
       });
     }
     res.status(500).send({
-      message: "Could not upload the file: " + req.file.originalname
+      message: `Could not upload the file: ${req.file.originalname}`
     });
   }
 };
@@ -107,13 +103,38 @@ const getEmployees = (req, res) => {
     .catch(err => {
       res.status(500).send({
         message:
-          err.message || "Some error occurred while retrieving tutorials."
+          err.message || "Some error occurred while retrieving employees."
       });
     });
 };
 
+const getImage = async (req, res) => {
+  try {
+    console.log(req?.params?.name);
+    if (req?.params?.name) {
+      const data = await Image.findAll({
+        where: {
+          name: req?.params?.name
+        }
+      });
+      if (data[0]?.dataValues) {
+        res.set("Content-Type", data[0]?.dataValues?.type);
+        res.send(data[0]?.dataValues.data);
+      } else {
+        res.status(400).send({ message: "No image found" });
+      }
+    } else {
+      res.status(400).send({ message: "No image found" });
+    }
+  } catch (err) {
+    return res.status(500).send({
+      message: err?.message || "Some error occurred while retrieving image."
+    });
+  }
+};
 module.exports = {
   upload,
   imageUpload,
-  getEmployees
+  getEmployees,
+  getImage
 };

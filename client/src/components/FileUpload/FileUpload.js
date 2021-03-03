@@ -7,6 +7,7 @@ const FileUpload = () => {
   const [message, setMessage] = useState("");
   const onFileChange = event => {
     setSelectedFile(event.target.files[0]);
+    setError("");
   };
   const onFileUpload = async () => {
     try {
@@ -18,7 +19,10 @@ const FileUpload = () => {
         if (selectedFile.name.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF)$/)) {
           url = "api/imageupload";
         }
-        const resp = await axios.post(`http://localhost:8080/${url}`, formData);
+        const resp = await axios.post(
+          `https://a39ded8ad7f7.ngrok.io/${url}`,
+          formData
+        );
         setMessage(resp?.data?.message);
         setTimeout(() => {
           setMessage("");

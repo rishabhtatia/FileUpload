@@ -14,5 +14,6 @@ router.post(
   employeeService.imageUpload
 );
 router.get("/employees", employeeService.getEmployees);
+router.get("/image/:name", employeeService.getImage);
 
 module.exports = router;

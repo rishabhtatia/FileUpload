@@ -1,22 +1,23 @@
 const Sequelize = require("sequelize");
 const mysql = require("mysql2/promise");
+const { DB, USERNAME, PASSWORD, HOST } = require("../constants/db");
 
 initialize();
 async function initialize() {
   // create db if it doesn't exist
   try {
     const connection = await mysql.createConnection({
-      host: "localhost",
-      user: "root",
-      password: "Ri$habh1234"
+      host: HOST,
+      user: USERNAME,
+      password: PASSWORD
     });
     await connection.query(`CREATE DATABASE IF NOT EXISTS \`test\`;`);
   } catch (err) {
     console.log("Error occured while creating Database");
   }
 }
-module.exports = new Sequelize("test", "root", "Ri$habh1234", {
-  host: "localhost",
+module.exports = new Sequelize(DB, USERNAME, PASSWORD, {
+  host: HOST,
   dialect: "mysql",
   pool: {
     max: 5,
