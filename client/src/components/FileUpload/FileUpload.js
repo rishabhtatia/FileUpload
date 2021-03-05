@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
+import styles from "./FileUpload.module.css";
+import { BASE_URL } from "../../constants";
 
 const FileUpload = () => {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -19,10 +21,7 @@ const FileUpload = () => {
         if (selectedFile.name.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF)$/)) {
           url = "api/imageupload";
         }
-        const resp = await axios.post(
-          `https://a39ded8ad7f7.ngrok.io/${url}`,
-          formData
-        );
+        const resp = await axios.post(`${BASE_URL}${url}`, formData);
         setMessage(resp?.data?.message);
         setTimeout(() => {
           setMessage("");
@@ -52,8 +51,8 @@ const FileUpload = () => {
           </div>
         )}
       </div>
-      <h2 style={{ color: "red" }}>{error}</h2>
-      <h2 style={{ color: "green" }}>{message}</h2>
+      <h2 className={styles.red}>{error}</h2>
+      <h2 className={styles.green}>{message}</h2>
     </div>
   );
 };

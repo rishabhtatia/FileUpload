@@ -17,8 +17,8 @@ async function initialize() {
   }
 }
 module.exports = new Sequelize(DB, USERNAME, PASSWORD, {
-  host: HOST,
   dialect: "mysql",
+  host: HOST,
   pool: {
     max: 5,
     min: 0,
