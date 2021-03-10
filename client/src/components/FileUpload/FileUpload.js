@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import axios from "axios";
-import styles from "./FileUpload.module.css";
+import RotateLoader from "react-spinners/RotateLoader";
+import "./FileUpload.scss";
 import { BASE_URL } from "../../constants";
+import Table from "../Table/Table";
 
 const FileUpload = () => {
+  const [isSubmitLoading, setIsSubmitLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [tableReload, setTableReload] = useState(null);
   const [error, setError] = useState("");
   const [message, setMessage] = useState("");
   const onFileChange = event => {
@@ -12,17 +16,15 @@ const FileUpload = () => {
     setError("");
   };
   const onFileUpload = async () => {
+    setIsSubmitLoading(true);
     try {
-      let url = "api/upload";
       if (selectedFile) {
         setError("");
         const formData = new FormData();
         formData.append("file", selectedFile);
-        if (selectedFile.name.match(/\.(jpg|JPG|jpeg|JPEG|png|PNG|gif|GIF)$/)) {
-          url = "api/imageupload";
-        }
-        const resp = await axios.post(`${BASE_URL}${url}`, formData);
+        const resp = await axios.post(`${BASE_URL}api/uploadcsv`, formData);
         setMessage(resp?.data?.message);
+        setTableReload(resp?.data?.message);
         setTimeout(() => {
           setMessage("");
         }, 4000);
@@ -32,24 +34,29 @@ const FileUpload = () => {
       }
     } catch (error) {
       setError(error?.message);
+    } finally {
+      setIsSubmitLoading(false);
     }
   };
   return (
     <div>
-      <h3>FILE UPLOAD</h3>
-      <div>
-        {/* <input type="file" name="file" id="file" className={styles.inputfile} />
-        <label for="file">Choose a file</label> */}
-        <div className={styles.uploadBtnWrapper}>
-          <button className={styles.btn} onClick={onFileUpload}>
-            Upload a file
-          </button>
+      <h1>FILE UPLOAD</h1>
+      <div className="container">
+        <div className="uploadBtnWrapper">
+          <button className="btn">Select a file</button>
           <input type="file" name="myfile" onChange={onFileChange} />
+        </div>
+        <div>
+          {isSubmitLoading ? (
+            <RotateLoader color="black" loading={true} size={15} />
+          ) : (
+            <button className="btn" onClick={onFileUpload}>
+              Upload
+            </button>
+          )}
         </div>
       </div>
       <div>
-        {/* <input type="file" onChange={onFileChange} />
-        <button onClick={onFileUpload}>Upload</button> */}
         {selectedFile && (
           <div>
             <h1>File Name:</h1>
@@ -61,8 +68,9 @@ const FileUpload = () => {
           </div>
         )}
       </div>
-      <h2 className={styles.red}>{error}</h2>
-      <h2 className={styles.green}>{message}</h2>
+      <h2 className="red">{error}</h2>
+      <h2 className="green">{message}</h2>
+      <Table tableReload={tableReload} />
     </div>
   );
 };
