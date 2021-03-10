@@ -15,5 +15,8 @@ router.post(
 );
 router.get("/employees", employeeService.getEmployees);
 router.get("/image/:name", employeeService.getImage);
+router.get("/getcsv", employeeService.getCsv);
+router.get("/uploadcsv", upload.single("file"), employeeService.uploadCsv);
+router.get("/updatefield", employeeService.updatedCsv);
 
 module.exports = router;

@@ -38,8 +38,18 @@ const FileUpload = () => {
     <div>
       <h3>FILE UPLOAD</h3>
       <div>
-        <input type="file" onChange={onFileChange} />
-        <button onClick={onFileUpload}>Upload</button>
+        {/* <input type="file" name="file" id="file" className={styles.inputfile} />
+        <label for="file">Choose a file</label> */}
+        <div className={styles.uploadBtnWrapper}>
+          <button className={styles.btn} onClick={onFileUpload}>
+            Upload a file
+          </button>
+          <input type="file" name="myfile" onChange={onFileChange} />
+        </div>
+      </div>
+      <div>
+        {/* <input type="file" onChange={onFileChange} />
+        <button onClick={onFileUpload}>Upload</button> */}
         {selectedFile && (
           <div>
             <h1>File Name:</h1>

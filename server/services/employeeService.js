@@ -1,5 +1,6 @@
 const Employee = require("../models/Employee");
 const Image = require("../models/Image");
+const File = require("../models/Files");
 const fs = require("fs");
 const csv = require("fast-csv");
 const readXlsxFile = require("read-excel-file/node");
@@ -132,9 +133,57 @@ const getImage = async (req, res) => {
     });
   }
 };
+
+const uploadCsv = async (req, res) => {
+  try {
+    if (req.file == undefined) {
+      return res.status(400).send("Please upload a file!");
+    }
+    let path = `${__basedir}/resources/static/assets/uploads/${req.file.filename}`;
+    await dbsql.query(`INSERT INTO files (source_file_path) VALUES("${path}")`);
+    // const csvFile = await File.create({
+    //   source_file_path: path
+    // });
+    return res.status(200).send({
+      message: "Uploaded the file successfully"
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      message: `Could not upload the file: ${req.file.originalname}`
+    });
+  }
+};
+
+const getCsv = async (req, res) => {
+  try {
+    // cosnt file = await fs.readFile("..res/static/assets/uploads/1614682547799-sheet1.csv")
+    res.setHeader("Content-Type", "text/csv");
+    res.setHeader("Content-Disposition", "attachment; filename=tutorials.csv");
+    res
+      .status(200)
+      .download(
+        `${__basedir}/resources/static/assets/uploads/1614682547799-sheet1.csv`
+      );
+  } catch (err) {
+    return res.status(500).send({
+      message: err?.message || "Some error occurred while retrieving csv."
+    });
+  }
+};
+
+const updatedCsv = async (req, res) => {
+  await File.update({ source_file_path: "asdas" }, { where: { id: 1 } });
+  res.status(200).send({
+    message: `Uploaded the file successfully`
+  });
+};
 module.exports = {
   upload,
   imageUpload,
   getEmployees,
-  getImage
+  getImage,
+  getCsv,
+  uploadCsv,
+  updatedCsv
 };
