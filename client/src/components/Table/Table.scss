@@ -10,11 +10,15 @@ th {
   text-align: left;
   padding: 8px;
 }
+th {
+  background-color: #009;
+  color: #fff;
+}
 .downloadButton {
   background-color: DodgerBlue;
   border: none;
   color: white;
-  padding: 12px 30px;
+  padding: 10px 30px;
   cursor: pointer;
   font-size: 20px;
   border-radius: 8px;

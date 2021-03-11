@@ -1,7 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
-const { DB, USERNAME, PASSWORD, HOST } = require("./constants/db");
+// const { DB, USERNAME, PASSWORD, HOST } = require("./constants/db");
 const mysql = require("mysql2");
 const upload = require("./routes/upload");
 const PORT = process.env.PORT || 8080;
@@ -9,10 +9,10 @@ const app = express();
 global.__basedir = __dirname;
 
 const dbsql = mysql.createConnection({
-  host: HOST,
-  user: USERNAME,
-  password: PASSWORD,
-  database: DB
+  host: process.env.HOST,
+  user: process.env.USERNAME,
+  password: process.env.PASSWORD,
+  database: process.env.DB
 });
 dbsql.connect(err => {
   if (err) {

@@ -4,7 +4,7 @@
   "description": "File Upload App",
   "main": "server.js",
   "scripts": {
-    "start": "nodemon server.js",
+    "start": "env-cmd -f ./config/qa.env node server.js",
     "dev": "env-cmd -f ./config/dev.env nodemon server.js"
   },
   "author": "Rishabh Tatia",
