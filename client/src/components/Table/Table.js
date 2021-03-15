@@ -29,7 +29,7 @@ const Table = props => {
     getTableData();
   }, [props.tableReload]);
   return (
-    <div>
+    <div className="tableContainer">
       <h1>CSV TABLE</h1>
       <table>
         <thead>

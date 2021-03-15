@@ -48,24 +48,27 @@ const FileUpload = () => {
         throw new Error("No file chosen");
       }
     } catch (error) {
+      setPercentageUploaded(0);
       setError(error?.message);
     } finally {
       setIsSubmitLoading(false);
     }
   };
   return (
-    <div>
-      <h1>FILE UPLOAD</h1>
+    <div className="mainContainer">
+      <h1 className="mainHeading">FILE UPLOAD</h1>
       <div className="container">
         <div className="uploadBtnWrapper">
-          <button className="btn">Select a file</button>
+          <button className="btn">
+            {selectedFile?.name ? selectedFile?.name : "Select a file"}
+          </button>
           <input type="file" name="myfile" onChange={onFileChange} />
         </div>
         <div>
           {isSubmitLoading ? (
             <RotateLoader color="black" loading={true} size={15} />
           ) : (
-            <button className="btn" onClick={onFileUpload}>
+            <button className="btn uploadBtn" onClick={onFileUpload}>
               Upload
             </button>
           )}
@@ -79,13 +82,11 @@ const FileUpload = () => {
           bgcolor="#00B000"
         />
       </div>
-      <div>
+      <div className="fileInfoSection">
         {selectedFile && (
           <div>
             <h1>File Name:</h1>
             <p>{selectedFile?.name}</p>
-            <h1>File Type:</h1>
-            <p>{selectedFile?.type}</p>
             <h1>File Size:</h1>
             <p>{selectedFile?.size}</p>
           </div>
